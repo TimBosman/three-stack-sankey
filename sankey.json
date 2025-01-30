@@ -398,8 +398,6 @@
             scale: x
             band: 1
           }
-        }
-        update: {
           x: {
             scale: x
             field: stack
