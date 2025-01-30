@@ -408,11 +408,13 @@
           y2: {
             field: scaledY1
           }
-          fillOpacity: {
-            value: 0.6
-          }
           tooltip: {
             signal: datum.grpId + '   ' + format(datum.total, ',.0f') + '   (' + format(datum.percentage, '.1%') + ')'
+          }
+        }
+        update: {
+          fillOpacity: {
+            value: 0.6
           }
         }
         hover: {
