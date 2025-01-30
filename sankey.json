@@ -484,7 +484,7 @@
           {
             // Clicking groupMark sets this signal to the filter values
             events: @groupMark:click!
-            update: '''{stack:datum.stack == "stk1" ? kibanaAddFilter({"match_phrase": {"machine.os.keyword":datum.grpId}}) : kibanaAddFilter({"match_phrase": {"geo.dest":datum.grpId}}) }'''
+            update: '''{stack:datum.stack == "stk1" ? kibanaAddFilter({"match_phrase": {"source.ip":datum.grpId}}) : {stack:datum.stack == "stk2" ? kibanaAddFilter({"match_phrase": {"port":datum.grpId}}) : kibanaAddFilter({"match_phrase": {"destination.ip":datum.grpId}})}}'''
           }
         ]
       }
