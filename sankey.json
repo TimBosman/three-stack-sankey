@@ -6,8 +6,7 @@
         name: rawData
         url: {
           %context%: true
-          %timefield%: @timestamp
-          index: kibana_sample_data_logs
+          index: test
           body: {
             size: 0
             aggs: {
@@ -18,14 +17,21 @@
                     {
                       stk1: {
                         terms: {
-                          field: machine.os.keyword
+                          field: source.ip.keyword
                         }
                       }
                     }
                     {
                       stk2: {
                         terms: {
-                          field: geo.dest
+                          field: port
+                        }
+                      }
+                    }
+                    {
+                      stk3: {
+                        terms: {
+                          field: destination.ip.keyword
                         }
                       }
                     }
@@ -50,6 +56,11 @@
             type: formula
             expr: datum.key.stk2
             as: stk2
+          }
+          {
+            type: formula
+            expr: datum.key.stk3
+            as: stk3
           }
           {
             type: formula
