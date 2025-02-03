@@ -98,7 +98,7 @@
         // Space separator ensures proper sort order in some corner cases.
         {
           type: formula
-          expr: datum.stack == 'stk1' ? datum.stk1+' '+datum.stk2 : datum.stk2+' '+datum.stk1
+          expr: datum.stack == 'stk1' ? datum.stk1+' '+datum.stk2+' '+datum.stk3 : datum.stack == 'stk2' ? datum.stk2+' '+datum.stk1+' '+datum.stk3 : datum.stk3+' '+datum.stk2+' '+datum.stk1
           as: sortField
         }
         // Calculate y0 and y1 positions for stacking nodes one on top of the other,
@@ -185,12 +185,23 @@
     }
     {
       // This is a temp lookup table with all the 'stk2' stack nodes
-      name: destinationNodes
+      name: middleNodes
       source: nodes
       transform: [
         {
           type: filter
           expr: datum.stack == 'stk2'
+        }
+      ]
+    }
+    {
+      // This is a temp lookup table with all the 'stk3' stack nodes
+      name: destinationNodes
+      source: nodes
+      transform: [
+        {
+          type: filter
+          expr: datum.stack == 'stk3'
         }
       ]
     }
@@ -201,12 +212,12 @@
         // we only want nodes from the left stack
         {
           type: filter
-          expr: datum.stack == 'stk1'
+          expr: datum.stack != 'stk3'
         }
         // find corresponding node from the right stack, keep it as "target"
         {
           type: lookup
-          from: destinationNodes
+          from: middleNodes
           key: key
           fields: [
             key
@@ -215,22 +226,33 @@
             target
           ]
         }
+        {
+          type: lookup
+          from: destinationNodes
+          key: key
+          fields: [
+            key
+          ]
+          as: [
+            final_target
+          ]
+        }
         // calculate SVG link path between stk1 and stk2 stacks for the node pair
         {
           type: linkpath
           orient: horizontal
           shape: diagonal
           sourceY: {
-            expr: scale('y', datum.yc)
+            expr: datum.stack == "stk1" ? scale('y', datum.yc) : scale('y', datum.target.yc)
           }
           sourceX: {
-            expr: scale('x', 'stk1') + bandwidth('x')
+            expr: datum.stack == "stk1" ? scale('x', 'stk1') + bandwidth('x') : scale('x', 'stk2') + bandwidth('x')
           }
           targetY: {
-            expr: scale('y', datum.target.yc)
+            expr: datum.stack == "stk1" ? scale('y', datum.target.yc) : scale('y', datum.final_target.yc)
           }
           targetX: {
-            expr: scale('x', 'stk2')
+            expr: datum.stack == "stk1" ? scale('x', 'stk2') : scale('x', 'stk3')
           }
         }
         // A little trick to calculate the thickness of the line.
@@ -344,13 +366,13 @@
           // from just one country, in which case use destination color.
           stroke: [
             {
-              test: groupSelector && groupSelector.stack=='stk1'
+              test: datum.stack == 'stk1'
               scale: color
-              field: stk2
+              field: stk1
             }
             {
               scale: color
-              field: stk1
+              field: stk2
             }
           ]
           strokeWidth: {
