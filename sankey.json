@@ -362,11 +362,11 @@
           // when showing all traffic, and hovering over a country,
           // highlight the traffic from that country.
           strokeOpacity: {
-            signal: !groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 0.9 : 0.3
+            signal: !groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2 || groupHover.stk3 == datum.stk3) ? 0.9 : 0.3
           }
           // Ensure that the hover-selected edges show on top
           zindex: {
-            signal: !groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2) ? 1 : 0
+            signal: !groupSelector && (groupHover.stk1 == datum.stk1 || groupHover.stk2 == datum.stk2 || groupHover.stk3 == datum.stk3) ? 1 : 0
           }
           // format tooltip string
           tooltip: {
@@ -468,7 +468,7 @@
       on: [
         {
           events: @groupMark:mouseover
-          update: "{stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId}"
+          update: "{stk1:datum.stack=='stk1' && datum.grpId, stk2:datum.stack=='stk2' && datum.grpId, stk3:datum.stack=='stk3' && datum.grpId}"
         }
         {
           events: mouseout
